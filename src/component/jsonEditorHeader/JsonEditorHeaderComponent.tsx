@@ -11,6 +11,7 @@ import EditorFormatPaint from 'material-ui/svg-icons/editor/format-paint';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import Divider from 'material-ui/Divider';
+import LinearProgress from 'material-ui/LinearProgress';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 interface JsonEditorHeaderComponentProperty {
@@ -18,7 +19,8 @@ interface JsonEditorHeaderComponentProperty {
     fileAuthorName: string;
     fileAuthorEmail: string;
     fileAuthorAvatar: string;
-    loadNewDocument: () => void;
+    fileIsFetched: boolean;
+    onLoadNewDocumentClick: () => void;
     onOpenHistoryModal: () => void;
     onFormatDocument: () => void;
     onOpenSearchDialog: () => void;
@@ -29,7 +31,7 @@ interface JsonEditorHeaderComponentState {
 }
 
 export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderComponentProperty, JsonEditorHeaderComponentState> {
-    constructor(props) {
+    constructor(props: JsonEditorHeaderComponentProperty) {
         super(props);
 
         this.state = { copySnackbackVisible: false };
@@ -72,11 +74,13 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
                     primaryText="Search in file"
                     leftIcon={<ActionSearch/>}
                     onClick={this.props.onOpenSearchDialog}
+                    disabled={!this.props.fileIsFetched}
                 />
                 <MenuItem
                     primaryText="Format file"
                     leftIcon={<EditorFormatPaint/>}
                     onClick={this.props.onFormatDocument}
+                    disabled={!this.props.fileIsFetched}
                 />
                 <CopyToClipboard
                     onCopy={this.displayCopySnackbar}
@@ -85,6 +89,7 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
                     <MenuItem
                         primaryText="Copy share link"
                         leftIcon={<SocialShare/>}
+                        disabled={!this.props.fileIsFetched}
                     />
                 </CopyToClipboard>
                 <Divider/>
@@ -96,21 +101,44 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
                 <MenuItem
                     primaryText="Load new document"
                     leftIcon={<ContentLink/>}
-                    onClick={this.props.loadNewDocument}
+                    onClick={this.props.onLoadNewDocumentClick}
                 />
             </IconMenu>
         );
     }
 
     render() {
-        const { fileName, fileAuthorEmail, fileAuthorName, fileAuthorAvatar } = this.props;
-        const subtitleLabel = `Uploaded by ${fileAuthorName} <${fileAuthorEmail}>`;
+        const {
+            fileName,
+            fileAuthorEmail,
+            fileAuthorName,
+            fileAuthorAvatar,
+            fileIsFetched
+        } = this.props;
+
+        const placeHolderStyle = {
+            width: '600px',
+            height: '15px',
+            marginTop: '4px',
+            marginBottom: '6px'
+        };
+
+        const fileNameLabel =
+            fileIsFetched ?
+            <div style={placeHolderStyle}>{fileName}</div> :
+            <LinearProgress mode="indeterminate" color="#c3c3c3" style={placeHolderStyle}/>;
+
+        const subtitleLabel =
+            fileIsFetched ?
+            <div style={placeHolderStyle}>{`Uploaded by ${fileAuthorName} <${fileAuthorEmail}>`}</div> :
+            <LinearProgress mode="indeterminate" color="#c3c3c3" style={placeHolderStyle}/>;
 
         return (
             <CardHeader
-                title={fileName}
+                title={fileNameLabel}
                 subtitle={subtitleLabel}
                 avatar={fileAuthorAvatar}
+                style={{ height: '76px' }}
             >
                 <Snackbar
                     open={this.state.copySnackbackVisible}

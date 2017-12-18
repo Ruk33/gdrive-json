@@ -6,23 +6,34 @@ import { RootState } from '@src/store';
 import { LoadingSpinnerComponent } from '@src/component/loadingSpinner/LoadingSpinnerComponent';
 import { JsonEditorHeaderComponent } from '@src/component/jsonEditorHeader/JsonEditorHeaderComponent';
 import { JsonEditorComponent } from '@src/component/jsonEditor/JsonEditorComponent';
-import { DocumentInputComponent } from '@src/component/documentInput/DocumentInputComponent';
 import { HistoryModalComponent } from '@src/component/historyModal/HistoryModalComponent';
 import { openModal } from '@src/component/historyModal/HistoryModalAction';
+import { OpenNewDocumentComponent } from '@src/component/openNewDocument/OpenNewDocumentComponent';
 
-import { formatDocument, formatDocumentOnLoad, updateLayer, openSearchDialog } from '@src/component/jsonEditor/JsonEditorAction';
-import { fetchDocument, reset } from './JsonEditorSectionAction';
+import {
+    formatDocument,
+    formatDocumentOnLoad,
+    updateLayer,
+    openSearchDialog
+} from '@src/component/jsonEditor/JsonEditorAction';
+
+import {
+    fetchDocument,
+    openNewDocumentPopup,
+    closeNewDocumentPopup
+} from './JsonEditorSectionAction';
 
 interface JsonEditorSectionComponentProperty {
     documentId: string;
     immJsonEditorSection: any;
-    fetchDocument: (string) => void;
-    reset: () => void;
+    onFetchDocument: (document: string) => void;
     onOpenHistoryModal: () => void;
-    onFormatDocument: (editor) => void;
-    onInitialFormatDocument: (editor) => void;
-    onUpdateLayer: (editor) => void;
-    onOpenSearchDialog: (editor) => void;
+    onFormatDocument: (editor: any) => void;
+    onInitialFormatDocument: (editor: any) => void;
+    onUpdateLayer: (editor: any) => void;
+    onOpenSearchDialog: (editor: any) => void;
+    onOpenNewDocumentPopup: () => void;
+    onCloseNewDocumentPopup: () => void;
 }
 
 interface JsonEditorSectionStateToProp {
@@ -30,19 +41,20 @@ interface JsonEditorSectionStateToProp {
 }
 
 interface JsonEditorSectionActionToProp {
-    fetchDocument: (string) => void;
-    reset: () => void;
+    onFetchDocument: (document: string) => void;
     onOpenHistoryModal: () => void;
-    onFormatDocument: (editor) => void;
-    onInitialFormatDocument: (editor) => void;
-    onUpdateLayer: (editor) => void;
-    onOpenSearchDialog: (editor) => void;
+    onFormatDocument: (editor: any) => void;
+    onInitialFormatDocument: (editor: any) => void;
+    onUpdateLayer: (editor: any) => void;
+    onOpenSearchDialog: (editor: any) => void;
+    onOpenNewDocumentPopup: () => void;
+    onCloseNewDocumentPopup: () => void;
 }
 
 class JsonEditorSection extends React.Component<JsonEditorSectionComponentProperty> {
     editor: any;
 
-    constructor(props) {
+    constructor(props: JsonEditorSectionComponentProperty) {
         super(props);
 
         this.setEditor = this.setEditor.bind(this);
@@ -53,7 +65,7 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
     }
 
     componentDidMount() {
-        this.props.fetchDocument(this.props.documentId);
+        this.props.onFetchDocument(this.props.documentId);
     }
 
     setEditor(editor) {
@@ -76,43 +88,56 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
         this.props.onOpenSearchDialog(this.editor);
     }
 
+    buildEditorHeader() {
+        const { immJsonEditorSection } = this.props;
+
+        return (
+            <JsonEditorHeaderComponent
+                fileName={immJsonEditorSection.get('fileName')}
+                fileAuthorName={immJsonEditorSection.get('fileAuthorName')}
+                fileAuthorEmail={immJsonEditorSection.get('fileAuthorEmail')}
+                fileAuthorAvatar={immJsonEditorSection.get('fileAuthorAvatar')}
+                fileIsFetched={immJsonEditorSection.get('fetched')}
+                onLoadNewDocumentClick={this.props.onOpenNewDocumentPopup}
+                onOpenHistoryModal={this.props.onOpenHistoryModal}
+                onFormatDocument={this.handleFormatDocument}
+                onOpenSearchDialog={this.handleOpenSearchDialog}
+            />
+        );
+    }
+
+    buildEditor() {
+        return (
+            <CardMedia>
+                <JsonEditorComponent
+                    fileContent={this.props.immJsonEditorSection.get('fileContent')}
+                    onEditorDidMount={this.setEditor}
+                    onFormatDocument={this.handleFormatDocument}
+                    onInitialFormatDocument={this.handleInitialFormatDocument}
+                    onUpdateLayer={this.handleUpdateLayer}
+                />
+            </CardMedia>
+        );
+    }
+
     render() {
         const { immJsonEditorSection } = this.props;
 
-        if (immJsonEditorSection.get('fetched')) {
-            return (
-                <Card>
-                    <HistoryModalComponent/>
-                    <JsonEditorHeaderComponent
-                        fileName={immJsonEditorSection.get('fileName')}
-                        fileAuthorName={immJsonEditorSection.get('fileAuthorName')}
-                        fileAuthorEmail={immJsonEditorSection.get('fileAuthorEmail')}
-                        fileAuthorAvatar={immJsonEditorSection.get('fileAuthorAvatar')}
-                        loadNewDocument={this.props.reset}
-                        onOpenHistoryModal={this.props.onOpenHistoryModal}
-                        onFormatDocument={this.handleFormatDocument}
-                        onOpenSearchDialog={this.handleOpenSearchDialog}
-                    />
-                    <CardMedia>
-                        <JsonEditorComponent
-                            fileContent={immJsonEditorSection.get('fileContent')}
-                            onEditorDidMount={this.setEditor}
-                            onFormatDocument={this.handleFormatDocument}
-                            onInitialFormatDocument={this.handleInitialFormatDocument}
-                            onUpdateLayer={this.handleUpdateLayer}
-                        />
-                    </CardMedia>
-                </Card>
-            );
-        } else if (immJsonEditorSection.get('fetching')) {
+        if (immJsonEditorSection.get('fetching')) {
             return <div style={{ marginTop: '20px' }}><LoadingSpinnerComponent/></div>;
         } else {
             return (
-                <DocumentInputComponent
-                    onContinue={this.props.fetchDocument}
-                    onOpenHistoryModal={this.props.onOpenHistoryModal}
-                    errorMessage={this.props.immJsonEditorSection.get('errorMessage')}
-                />
+                <Card>
+                    <HistoryModalComponent/>
+                    <OpenNewDocumentComponent
+                        onContinue={this.props.onFetchDocument}
+                        onClose={this.props.onCloseNewDocumentPopup}
+                        errorMessage={this.props.immJsonEditorSection.get('errorMessage')}
+                        isOpen={this.props.immJsonEditorSection.get('popUpNewDocumentOpen')}
+                    />
+                    {this.buildEditorHeader()}
+                    {this.buildEditor()}
+                </Card>
             );
         }
     }
@@ -123,12 +148,13 @@ export const JsonEditorSectionComponent = connect<JsonEditorSectionStateToProp, 
         immJsonEditorSection: state.jsonEditorSection
     }),
     {
-        fetchDocument,
-        reset,
+        onFetchDocument: fetchDocument,
         onOpenHistoryModal: openModal,
         onFormatDocument: formatDocument,
         onInitialFormatDocument: formatDocumentOnLoad,
         onUpdateLayer: updateLayer,
-        onOpenSearchDialog: openSearchDialog
+        onOpenSearchDialog: openSearchDialog,
+        onOpenNewDocumentPopup: openNewDocumentPopup,
+        onCloseNewDocumentPopup: closeNewDocumentPopup
     }
 )<JsonEditorSectionComponentProperty>(JsonEditorSection);

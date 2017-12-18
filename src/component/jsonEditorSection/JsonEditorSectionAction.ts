@@ -5,14 +5,18 @@ export enum actionTypes {
     JSON_EDITOR_SECTION_FETCHING = 'JSON_EDITOR_SECTION_FETCHING',
     JSON_EDITOR_SECTION_FETCHING_SUCCESS = 'JSON_EDITOR_SECTION_FETCHING_SUCCESS',
     JSON_EDITOR_SECTION_FETCHING_ERROR = 'JSON_EDITOR_SECTION_FETCHING_ERROR',
-    JSON_EDITOR_SECTION_RESET = 'JSON_EDITOR_SECTION_RESET'
-};
+    JSON_EDITOR_SECTION_RESET = 'JSON_EDITOR_SECTION_RESET',
+    JSON_EDITOR_SECTION_OPEN_NEW_DOCUMENT_POPUP = 'JSON_EDITOR_SECTION_OPEN_NEW_DOCUMENT_POPUP',
+    JSON_EDITOR_SECTION_CLOSE_NEW_DOCUMENT_POPUP = 'JSON_EDITOR_SECTION_CLOSE_NEW_DOCUMENT_POPUP'
+}
 
 export type Action
     = FetchingAction
     | FetchingSuccessAction
     | Error
     | ResetAction
+    | OpenNewDocumentPopup
+    | CloseNewDocumentPopup
     ;
 
 interface Error {
@@ -107,3 +111,19 @@ export const reset = (): ResetAction => {
     history.pushState(null, '', '/'); // Clean document query param
     return { type: actionTypes.JSON_EDITOR_SECTION_RESET };
 };
+
+interface OpenNewDocumentPopup {
+    type: actionTypes.JSON_EDITOR_SECTION_OPEN_NEW_DOCUMENT_POPUP;
+}
+
+export const openNewDocumentPopup = (): OpenNewDocumentPopup => ({
+    type: actionTypes.JSON_EDITOR_SECTION_OPEN_NEW_DOCUMENT_POPUP
+});
+
+interface CloseNewDocumentPopup {
+    type: actionTypes.JSON_EDITOR_SECTION_CLOSE_NEW_DOCUMENT_POPUP;
+}
+
+export const closeNewDocumentPopup = (): CloseNewDocumentPopup => ({
+    type: actionTypes.JSON_EDITOR_SECTION_CLOSE_NEW_DOCUMENT_POPUP
+});
