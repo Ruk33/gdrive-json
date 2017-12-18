@@ -7,7 +7,7 @@ import ActionInput from 'material-ui/svg-icons/action/input';
 import { fullWhite } from 'material-ui/styles/colors';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 
-import { openLoginWindow } from './LoginModalAction';
+import { login } from '@src/component/authorize/AuthorizeAction';
 
 interface LoginModalProperty {
     openLoginWindow: () => void;
@@ -45,6 +45,6 @@ class LoginModal extends React.Component<LoginModalProperty> {
 export const LoginModalComponent = connect<void, LoginModalActionToProp>(
     null,
     {
-        openLoginWindow
+        openLoginWindow: login
     }
 )(LoginModal);

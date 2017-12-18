@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import Snackbar from 'material-ui/Snackbar';
+
 import { RootState } from '@src/store';
 import { LoginModalComponent } from '@src/component/loginModal/LoginModalComponent';
 import { useSession } from './AuthorizeAction';
@@ -25,10 +27,21 @@ class Authorize extends React.Component<AuthorizeComponentProperty> {
     }
 
     render() {
-        if (this.props.immAuthorize.get('isAuth')) {
+        const { immAuthorize } = this.props;
+
+        if (immAuthorize.get('isAuth')) {
             return this.props.children;
         } else {
-            return <LoginModalComponent/>;
+            return (
+                <section>
+                    <Snackbar
+                        open={!!immAuthorize.get('error')}
+                        message={immAuthorize.get('error')}
+                        autoHideDuration={5000}
+                    />
+                    <LoginModalComponent/>
+                </section>
+            );
         }
     }
 }
