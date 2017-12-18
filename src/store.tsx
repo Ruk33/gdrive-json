@@ -24,7 +24,7 @@ const appReducer = combineReducers<RootState>({
 
 function rootReducer(state, action): RootState {
     const userLoggedOut = (
-        action.type == actionTypes.AUTHORIZE_STATUS_CHANGE &&
+        action.type === actionTypes.AUTHORIZE_STATUS_CHANGE &&
         !action.payload.isAuth
     );
 

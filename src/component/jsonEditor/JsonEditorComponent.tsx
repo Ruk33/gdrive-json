@@ -14,10 +14,10 @@ interface JsonEditorComponentState {
 }
 
 export class JsonEditorComponent extends React.Component<JsonEditorComponentProperty, JsonEditorComponentState> {
-    constructor(props) {
+    constructor(props: JsonEditorComponentProperty) {
         super(props);
 
-        this.state = { editorHeight: 0 }
+        this.state = { editorHeight: 0 };
 
         this.editorDidMount = this.editorDidMount.bind(this);
         this.updateEditorHeight = this.updateEditorHeight.bind(this);

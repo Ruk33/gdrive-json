@@ -4,7 +4,7 @@ export enum actionTypes {
     TOP_BAR_USER_FETCHING = 'TOP_BAR_USER_FETCHING',
     TOP_BAR_USER_FETCHING_SUCCESS = 'TOP_BAR_USER_FETCHING_SUCCESS',
     TOP_BAR_USER_FETCHING_FAILURE = 'TOP_BAR_USER_FETCHING_FAILURE'
-};
+}
 
 export type Action
     = FetchingAction
@@ -37,4 +37,4 @@ export const fetch = () => (dispatch) => {
     });
 
     getUser().then((response) => dispatch(fetchSuccess(response.result)));
-}
+};

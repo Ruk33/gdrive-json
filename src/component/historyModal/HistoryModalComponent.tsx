@@ -20,8 +20,8 @@ import { closeModal, filter } from './HistoryModalAction';
 interface HistoryModalProperty {
     immHistoryModal: any;
     onCloseModal: () => void;
-    fetchDocument: (string) => void;
-    onChangeFilter: (string) => void;
+    fetchDocument: (document: string) => void;
+    onChangeFilter: (searchTerm: string) => void;
 }
 
 interface HistoryModalStateToProp {
@@ -30,19 +30,20 @@ interface HistoryModalStateToProp {
 
 interface HistoryModalActionToProp {
     onCloseModal: () => void;
-    fetchDocument: (string) => void;
-    onChangeFilter: (string) => void;
+    fetchDocument: (document: string) => void;
+    onChangeFilter: (searchTerm: string) => void;
 }
 
 export class HistoryModal extends React.Component<HistoryModalProperty> {
-    constructor(props) {
+    constructor(props: HistoryModalProperty) {
         super(props);
+
         this.handleFilterChange = this.handleFilterChange.bind(this);
         this.handleDocClick = this.handleDocClick.bind(this);
         this.buildRow = this.buildRow.bind(this);
     }
 
-    handleFilterChange(event, filterText) {
+    handleFilterChange(event, filterText: string) {
         this.props.onChangeFilter(filterText);
     }
 
@@ -76,7 +77,7 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
             overflowY: 'auto',
             height: '195px',
             marginBottom: '20px'
-        }
+        };
 
         let rows;
 
@@ -105,7 +106,7 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
                 </div>
             );
         } else {
-            rows= this.props.immHistoryModal.get('filterDocs').map(this.buildRow);
+            rows = this.props.immHistoryModal.get('filterDocs').map(this.buildRow);
         }
 
         return (

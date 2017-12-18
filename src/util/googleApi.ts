@@ -23,7 +23,7 @@ export function logout() {
     return gapi.auth2.getAuthInstance().signOut();
 }
 
-function signIn(authStatusListener: (isAuth) => void, openLoginWindowIfNotAuth) {
+function signIn(authStatusListener: (isAuth: boolean) => void, openLoginWindowIfNotAuth: boolean) {
     const isAuth = gapi.auth2.getAuthInstance().isSignedIn.get();
 
     gapi.auth2.getAuthInstance().isSignedIn.listen(authStatusListener);
@@ -40,8 +40,8 @@ function signIn(authStatusListener: (isAuth) => void, openLoginWindowIfNotAuth) 
 function initClient() {
     const scopes = [
         'https://www.googleapis.com/auth/drive',
-        'https://www.googleapis.com/auth/drive.appdata',
-        'https://www.googleapis.com/auth/drive.file',
+        // 'https://www.googleapis.com/auth/drive.appdata',
+        // 'https://www.googleapis.com/auth/drive.file',
     ];
 
     const config = {
@@ -56,13 +56,13 @@ function initClient() {
     return client().init(config);
 }
 
-export function loginWithSession(authStatusListener: (isAuth) => void) {
+export function loginWithSession(authStatusListener: (isAuth: boolean) => void) {
     return loadClientLibrary('client:auth2')
         .then(initClient)
         .then(() => signIn(authStatusListener, false));
 }
 
-export function login(authStatusListener: (isAuth) => void) {
+export function login(authStatusListener: (isAuth: boolean) => void) {
     return loadClientLibrary('client:auth2')
         .then(initClient)
         .then(() => signIn(authStatusListener, true));

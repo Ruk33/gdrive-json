@@ -19,10 +19,10 @@ function onOpenFile(immState, action: JsonSectionAction.FetchingSuccessAction) {
     const { fileUrl, fileInfo, filePermissions, fileId } = action.payload;
     let immDocHistory = immState.get('docHistory');
 
-    const fileAlreadyInHistoryIndex = immDocHistory.findIndex(x => x.get('fileId') == fileId);
+    const fileAlreadyInHistoryIndex = immDocHistory.findIndex(x => x.get('fileId') === fileId);
     const owner = getOwner(filePermissions);
 
-    if (fileAlreadyInHistoryIndex != -1) {
+    if (fileAlreadyInHistoryIndex !== -1) {
         immDocHistory = immDocHistory.delete(fileAlreadyInHistoryIndex);
     }
 
@@ -38,7 +38,7 @@ function onOpenFile(immState, action: JsonSectionAction.FetchingSuccessAction) {
     );
 }
 
-function onAuthStatusChange(immState, action: AuthorizeAction.Action) {
+function onAuthStatusChange(immState, action: AuthorizeAction.AuthorizeStatusChange) {
     if (action.payload.fromSession) {
         return immState;
     } else {
@@ -51,12 +51,12 @@ function updateLocalStorage(immState) {
     return immState;
 }
 
-function filter(immState, filter: string) {
+function filter(immState, searchTerm: string) {
     const immDocHistory = immState.get('docHistory');
     let immFilterDocs;
 
-    if (filter) {
-        const lowerCaseFilter = filter.toLowerCase();
+    if (searchTerm) {
+        const lowerCaseFilter = searchTerm.toLowerCase();
 
         immFilterDocs = immDocHistory.filter((immFile) => {
             const fileName: string = immFile.get('fileName');
@@ -73,11 +73,14 @@ function filter(immState, filter: string) {
 
     return immState.merge({
         filterDocs: immFilterDocs,
-        filter
+        searchTerm
     });
 }
 
-export function historyModalReducer(state = INITIAL_STATE, action: JsonSectionAction.Action | AuthorizeAction.Action | Action) {
+export function historyModalReducer(
+    state = INITIAL_STATE,
+    action: JsonSectionAction.Action | AuthorizeAction.AuthorizeStatusChange | Action
+) {
     switch (action.type) {
         case actionTypes.HISTORY_MODAL_FILTER:
             return filter(state, action.payload.filterText);

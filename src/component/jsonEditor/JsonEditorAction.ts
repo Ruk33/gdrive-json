@@ -3,7 +3,7 @@ export enum actionTypes {
     JSON_EDITOR_FORMAT_DOCUMENT_ON_LOAD = 'JSON_EDITOR_FORMAT_DOCUMENT_ON_LOAD',
     JSON_EDITOR_UPDATE_LAYER = 'JSON_EDITOR_UPDATE_LAYER',
     JSON_EDITOR_OPEN_SEARCH_DIALOG = 'JSON_EDITOR_OPEN_SEARCH_DIALOG'
-};
+}
 
 export const formatDocument = (editor) => {
     if (editor) {
@@ -45,12 +45,12 @@ export const formatDocumentOnLoad = (editor) => {
     }
 
     return { type: actionTypes.JSON_EDITOR_FORMAT_DOCUMENT_ON_LOAD };
-}
+};
 
 export const openSearchDialog = (editor) => {
     if (editor) {
         editor.getAction('actions.find').run();
     }
 
-    return { type: actionTypes.JSON_EDITOR_OPEN_SEARCH_DIALOG }
-}
+    return { type: actionTypes.JSON_EDITOR_OPEN_SEARCH_DIALOG };
+};

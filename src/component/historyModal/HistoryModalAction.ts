@@ -2,7 +2,7 @@ export enum actionTypes {
     HISTORY_MODAL_OPEN = 'HISTORY_MODAL_OPEN',
     HISTORY_MODAL_CLOSE = 'HISTORY_MODAL_CLOSE',
     HISTORY_MODAL_FILTER = 'HISTORY_MODAL_FILTER'
-};
+}
 
 export type Action
     = Open
