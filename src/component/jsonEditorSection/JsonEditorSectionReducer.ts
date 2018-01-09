@@ -1,6 +1,7 @@
 import { fromJS } from 'immutable';
+import { trim } from 'lodash';
 
-import { Action, actionTypes } from './JsonEditorSectionAction';
+import { Action, actionTypes, FetchingSuccessAction } from './JsonEditorSectionAction';
 
 const INITIAL_STATE = fromJS({
     fetching: false,
@@ -16,6 +17,35 @@ const INITIAL_STATE = fromJS({
 
 const getOwner = (permissions) => permissions.find(x => x.role === 'owner');
 
+const documentFetched = (immState, action: FetchingSuccessAction) => {
+    const owner = getOwner(action.payload.filePermissions);
+    let fileContent = '';
+
+    try {
+        const spaces = 4;
+
+        fileContent = JSON.stringify(
+            JSON.parse(trim(action.payload.fileContent)),
+            null,
+            spaces
+        );
+    } catch (e) {
+        fileContent = action.payload.fileContent;
+    }
+
+    return immState.merge({
+        popUpNewDocumentOpen: false,
+        fetching: false,
+        fetched: true,
+        fileName: action.payload.fileInfo.title,
+        fileAuthorName: owner.name,
+        fileAuthorEmail: owner.emailAddress,
+        fileAuthorAvatar: owner.photoLink,
+        errorMessage: '',
+        fileContent
+    });
+};
+
 export function jsonEditorSectionReducer(state = INITIAL_STATE, action: Action) {
     switch (action.type) {
         case actionTypes.JSON_EDITOR_SECTION_CLOSE_NEW_DOCUMENT_POPUP:
@@ -30,19 +60,7 @@ export function jsonEditorSectionReducer(state = INITIAL_STATE, action: Action) 
         case actionTypes.JSON_EDITOR_SECTION_FETCHING:
             return state.set('fetching', true);
         case actionTypes.JSON_EDITOR_SECTION_FETCHING_SUCCESS:
-            const owner = getOwner(action.payload.filePermissions);
-
-            return state.merge({
-                popUpNewDocumentOpen: false,
-                fetching: false,
-                fetched: true,
-                fileName: action.payload.fileInfo.title,
-                fileAuthorName: owner.name,
-                fileAuthorEmail: owner.emailAddress,
-                fileAuthorAvatar: owner.photoLink,
-                fileContent: action.payload.fileContent,
-                errorMessage: ''
-            });
+            return documentFetched(state, action);
         case actionTypes.JSON_EDITOR_SECTION_FETCHING_ERROR:
             const error = action.payload.error.message;
             return state.merge({

@@ -22,28 +22,6 @@ export const updateLayer = (editor) => {
 };
 
 export const formatDocumentOnLoad = (editor) => {
-    if (editor) {
-        const onDidFocusEditor = editor.onDidFocusEditor(() => {
-            onDidFocusEditor.dispose();
-            formatDocument(editor);
-        });
-
-        const onDidFocusEditorText = editor.onDidFocusEditorText(() => {
-            onDidFocusEditorText.dispose();
-            formatDocument(editor);
-        });
-
-        const onMouseMove = editor.onMouseMove(() => {
-            onMouseMove.dispose();
-            formatDocument(editor);
-        });
-
-        const onMouseUp = editor.onMouseUp(() => {
-            onMouseUp.dispose();
-            formatDocument(editor);
-        });
-    }
-
     return { type: actionTypes.JSON_EDITOR_FORMAT_DOCUMENT_ON_LOAD };
 };
 
