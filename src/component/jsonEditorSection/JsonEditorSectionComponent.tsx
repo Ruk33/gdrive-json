@@ -9,6 +9,7 @@ import { JsonEditorComponent } from '@src/component/jsonEditor/JsonEditorCompone
 import { HistoryModalComponent } from '@src/component/historyModal/HistoryModalComponent';
 import { openModal } from '@src/component/historyModal/HistoryModalAction';
 import { OpenNewDocumentComponent } from '@src/component/openNewDocument/OpenNewDocumentComponent';
+import { DocumentInputComponent } from '@src/component/documentInput/DocumentInputComponent';
 
 import {
     formatDocument,
@@ -123,9 +124,12 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
     render() {
         const { immJsonEditorSection } = this.props;
 
-        if (immJsonEditorSection.get('fetching')) {
+        const isFetchingDocument = immJsonEditorSection.get('fetching');
+        const isDocumentFetched = immJsonEditorSection.get('fetched');
+
+        if (isFetchingDocument) {
             return <div style={{ marginTop: '20px' }}><LoadingSpinnerComponent/></div>;
-        } else {
+        } else if (isDocumentFetched) {
             return (
                 <Card>
                     <HistoryModalComponent/>
@@ -138,6 +142,14 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
                     {this.buildEditorHeader()}
                     {this.buildEditor()}
                 </Card>
+            );
+        } else {
+            return (
+                <DocumentInputComponent
+                    onContinue={this.props.onFetchDocument}
+                    onOpenHistoryModal={this.props.onOpenHistoryModal}
+                    errorMessage={this.props.immJsonEditorSection.get('errorMessage')}
+                />
             );
         }
     }
