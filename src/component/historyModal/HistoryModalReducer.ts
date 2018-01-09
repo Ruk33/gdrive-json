@@ -73,7 +73,7 @@ function filter(immState, searchTerm: string) {
 
     return immState.merge({
         filterDocs: immFilterDocs,
-        searchTerm
+        filter: searchTerm
     });
 }
 
