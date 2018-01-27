@@ -1,3 +1,4 @@
+// @vendors
 import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
@@ -6,6 +7,8 @@ import ActionCode from 'material-ui/svg-icons/action/code';
 import ActionHistory from 'material-ui/svg-icons/action/history';
 import { fullWhite } from 'material-ui/styles/colors';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
+
+// @components
 import { HistoryModalComponent } from '@src/component/historyModal/HistoryModalComponent';
 
 interface DocumentInputProperty {
@@ -18,8 +21,11 @@ interface DocumentInputState {
     fileId: string;
 }
 
-export class DocumentInputComponent extends React.Component<DocumentInputProperty, DocumentInputState> {
-    constructor(props) {
+export class DocumentInputComponent extends React.Component<
+    DocumentInputProperty,
+    DocumentInputState
+> {
+    constructor(props: DocumentInputProperty) {
         super(props);
 
         this.state = { fileId: '' };
@@ -28,7 +34,7 @@ export class DocumentInputComponent extends React.Component<DocumentInputPropert
         this.onContinue = this.onContinue.bind(this);
     }
 
-    onChange(event, newValue) {
+    onChange(event, newValue: string) {
         this.setState({ fileId: newValue });
     }
 
@@ -39,7 +45,7 @@ export class DocumentInputComponent extends React.Component<DocumentInputPropert
     render() {
         return (
             <Dialog modal={true} open={true} style={{ textAlign: 'center' }}>
-                <HistoryModalComponent/>
+                <HistoryModalComponent />
                 <Card>
                     <CardTitle
                         title="Welcome to JSONViewer!"

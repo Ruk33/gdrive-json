@@ -1,27 +1,23 @@
-import { fromJS } from 'immutable';
+// @actions
+import { Action, ActionType } from './AuthorizeAction';
 
-import { Action, actionTypes } from './AuthorizeAction';
+// @states
+import { AuthorizeState } from './AuthorizeState';
+import { ImmutableAuthorizeState } from './ImmutableAuthorizeState';
 
-const INITIAL_STATE = fromJS({
-    isAuth: false,
-    error: ''
-});
-
-function getErrorMessageByCode(errorCode: string) {
-    switch (errorCode) {
-        case 'popup_blocked_by_browser':
-            return 'Google login popup has been blocked, please enable popups';
-        default:
-            return '';
-    }
-}
-
-export function authorizeReducer(state = INITIAL_STATE, action: Action) {
+export function authorizeReducer(
+    state: AuthorizeState = ImmutableAuthorizeState.initialState,
+    action: Action
+): AuthorizeState {
     switch (action.type) {
-        case actionTypes.AUTHORIZE_ERROR:
-            return INITIAL_STATE.set('error', getErrorMessageByCode(action.payload.error));
-        case actionTypes.AUTHORIZE_STATUS_CHANGE:
-            return INITIAL_STATE.set('isAuth', action.payload.isAuth);
+        case ActionType.AUTHORIZE_ERROR:
+            return ImmutableAuthorizeState.initialState.authorizeError(
+                action.payload.error
+            );
+        case ActionType.AUTHORIZE_STATUS_CHANGE:
+            return ImmutableAuthorizeState.initialState.authStateChanged(
+                action.payload.isAuth
+            );
         default:
             return state;
     }

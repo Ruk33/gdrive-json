@@ -4,15 +4,19 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { topBarUserReducer } from '@src/component/topBarUser/TopBarUserReducer';
 import { authorizeReducer } from '@src/component/authorize/AuthorizeReducer';
+import { AuthorizeState } from '@src/component/authorize/AuthorizeState';
 import { jsonEditorSectionReducer } from '@src/component/jsonEditorSection/JsonEditorSectionReducer';
-import { actionTypes } from '@src/component/authorize/AuthorizeAction';
+import { ActionType } from '@src/component/authorize/AuthorizeAction';
 import { historyModalReducer } from '@src/component/historyModal/HistoryModalReducer';
+import { HistoryModalState } from '@src/component/historyModal/HistoryModalState';
+import { JsonEditorSectionState } from '@src/component/jsonEditorSection/JsonEditorSectionState';
+import { TopBarUserState } from '@src/component/topBarUser/TopBarUserState';
 
 export interface RootState {
-    topBarUser: any;
-    jsonEditorSection: any;
-    authorize: any;
-    historyModal: any;
+    topBarUser: TopBarUserState;
+    jsonEditorSection: JsonEditorSectionState;
+    authorize: AuthorizeState;
+    historyModal: HistoryModalState;
 }
 
 const appReducer = combineReducers<RootState>({
@@ -23,10 +27,9 @@ const appReducer = combineReducers<RootState>({
 });
 
 function rootReducer(state, action): RootState {
-    const userLoggedOut = (
-        action.type === actionTypes.AUTHORIZE_STATUS_CHANGE &&
-        !action.payload.isAuth
-    );
+    const userLoggedOut =
+        action.type === ActionType.AUTHORIZE_STATUS_CHANGE &&
+        !action.payload.isAuth;
 
     if (userLoggedOut) {
         state = undefined;

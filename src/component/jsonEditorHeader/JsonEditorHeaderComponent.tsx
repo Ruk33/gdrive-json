@@ -1,3 +1,4 @@
+// @vendors
 import * as React from 'react';
 import { CardHeader } from 'material-ui/Card';
 import IconMenu from 'material-ui/IconMenu';
@@ -30,7 +31,10 @@ interface JsonEditorHeaderComponentState {
     copySnackbackVisible: boolean;
 }
 
-export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderComponentProperty, JsonEditorHeaderComponentState> {
+export class JsonEditorHeaderComponent extends React.Component<
+    JsonEditorHeaderComponentProperty,
+    JsonEditorHeaderComponentState
+> {
     constructor(props: JsonEditorHeaderComponentProperty) {
         super(props);
 
@@ -54,7 +58,7 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
             <FlatButton
                 label="Menu"
                 labelPosition="before"
-                icon={<MenuIcon/>}
+                icon={<MenuIcon />}
                 backgroundColor="#37474F"
                 hoverColor="#455A64"
                 style={{ color: 'white' }}
@@ -72,13 +76,13 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
             >
                 <MenuItem
                     primaryText="Search in file"
-                    leftIcon={<ActionSearch/>}
+                    leftIcon={<ActionSearch />}
                     onClick={this.props.onOpenSearchDialog}
                     disabled={!this.props.fileIsFetched}
                 />
                 <MenuItem
                     primaryText="Format file"
-                    leftIcon={<EditorFormatPaint/>}
+                    leftIcon={<EditorFormatPaint />}
                     onClick={this.props.onFormatDocument}
                     disabled={!this.props.fileIsFetched}
                 />
@@ -88,19 +92,19 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
                 >
                     <MenuItem
                         primaryText="Copy share link"
-                        leftIcon={<SocialShare/>}
+                        leftIcon={<SocialShare />}
                         disabled={!this.props.fileIsFetched}
                     />
                 </CopyToClipboard>
-                <Divider/>
+                <Divider />
                 <MenuItem
                     primaryText="Open your history"
-                    leftIcon={<ActionHistory/>}
+                    leftIcon={<ActionHistory />}
                     onClick={this.props.onOpenHistoryModal}
                 />
                 <MenuItem
                     primaryText="Load new document"
-                    leftIcon={<ContentLink/>}
+                    leftIcon={<ContentLink />}
                     onClick={this.props.onLoadNewDocumentClick}
                 />
             </IconMenu>
@@ -123,15 +127,27 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
             marginBottom: '6px'
         };
 
-        const fileNameLabel =
-            fileIsFetched ?
-            <div style={placeHolderStyle}>{fileName}</div> :
-            <LinearProgress mode="indeterminate" color="#c3c3c3" style={placeHolderStyle}/>;
+        const fileNameLabel = fileIsFetched ? (
+            <div style={placeHolderStyle}>{fileName}</div>
+        ) : (
+            <LinearProgress
+                mode="indeterminate"
+                color="#c3c3c3"
+                style={placeHolderStyle}
+            />
+        );
 
-        const subtitleLabel =
-            fileIsFetched ?
-            <div style={placeHolderStyle}>{`Uploaded by ${fileAuthorName} <${fileAuthorEmail}>`}</div> :
-            <LinearProgress mode="indeterminate" color="#c3c3c3" style={placeHolderStyle}/>;
+        const subtitleLabel = fileIsFetched ? (
+            <div
+                style={placeHolderStyle}
+            >{`Uploaded by ${fileAuthorName} <${fileAuthorEmail}>`}</div>
+        ) : (
+            <LinearProgress
+                mode="indeterminate"
+                color="#c3c3c3"
+                style={placeHolderStyle}
+            />
+        );
 
         return (
             <CardHeader
@@ -146,7 +162,9 @@ export class JsonEditorHeaderComponent extends React.Component<JsonEditorHeaderC
                     autoHideDuration={5000}
                     onRequestClose={this.hideCopySnackbar}
                 />
-                <div style={{ position: 'absolute', top: '20px', right: '10px' }}>
+                <div
+                    style={{ position: 'absolute', top: '20px', right: '10px' }}
+                >
                     {this.buildMenu()}
                 </div>
             </CardHeader>

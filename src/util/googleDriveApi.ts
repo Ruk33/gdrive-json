@@ -5,20 +5,26 @@ function loadDrive(version: string) {
 }
 
 export function getDocument(fileId: string) {
-    return loadDrive('v2').then(() => client().drive.files.export({
-        mimeType: 'text/plain',
-        fileId
-    }));
+    return loadDrive('v2').then(() =>
+        client().drive.files.export({
+            mimeType: 'text/plain',
+            fileId
+        })
+    );
 }
 
 export function getDocumentPermissions(fileId: string) {
-    return loadDrive('v2').then(() => client().drive.permissions.list({
-        fileId
-    }));
+    return loadDrive('v2').then(() =>
+        client().drive.permissions.list({
+            fileId
+        })
+    );
 }
 
 export function getDocumentInfo(fileId: string) {
-    return loadDrive('v2').then(() => client().drive.files.get({
-        fileId
-    }));
+    return loadDrive('v2').then(() =>
+        client().drive.files.get({
+            fileId
+        })
+    );
 }

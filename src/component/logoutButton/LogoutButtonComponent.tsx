@@ -1,11 +1,14 @@
+// @vendors
 import * as React from 'react';
 import { connect } from 'react-redux';
-
 import Avatar from 'material-ui/Avatar';
 import FlatButton from 'material-ui/FlatButton';
 
-import { RootState } from '@src/store';
+// @actions
 import { logout } from '@src/component/authorize/AuthorizeAction';
+
+// @stores
+import { RootState } from '@src/store';
 
 interface LogoutButtonProperty {
     userName: string;
@@ -24,7 +27,7 @@ interface LogoutButtonActionToProp {
 
 class LogoutButton extends React.Component<LogoutButtonProperty> {
     buildAvatar() {
-        return <Avatar src={this.props.userAvatar} size={30}/>;
+        return <Avatar src={this.props.userAvatar} size={30} />;
     }
 
     render() {
@@ -55,10 +58,13 @@ class LogoutButton extends React.Component<LogoutButtonProperty> {
     }
 }
 
-export const LogoutButtonComponent = connect<LogoutButtonStateToProp, LogoutButtonActionToProp>(
+export const LogoutButtonComponent = connect<
+    LogoutButtonStateToProp,
+    LogoutButtonActionToProp
+>(
     (state: RootState) => ({
-        userName: state.topBarUser.get('displayName'),
-        userAvatar: state.topBarUser.get('avatar')
+        userName: state.topBarUser.displayName,
+        userAvatar: state.topBarUser.avatar
     }),
     {
         onLogoutClick: logout

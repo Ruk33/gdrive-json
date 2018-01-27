@@ -1,27 +1,19 @@
-import { fromJS } from 'immutable';
+// @actions
+import { ActionType, Action } from './TopBarUserAction';
 
-import { actionTypes, Action } from './TopBarUserAction';
+// @states
+import { ImmutableTopBarUserState } from './ImmutableTopBarUserState';
+import { TopBarUserState } from './TopBarUserState';
 
-const INITIAL_STATE = fromJS({
-    avatar: '',
-    displayName: '',
-    url: '',
-    fetching: false,
-    fetched: false
-});
-
-export function topBarUserReducer(state = INITIAL_STATE, action: Action) {
+export function topBarUserReducer(
+    state: TopBarUserState = ImmutableTopBarUserState.initialState,
+    action: Action
+): TopBarUserState {
     switch (action.type) {
-        case actionTypes.TOP_BAR_USER_FETCHING:
-            return INITIAL_STATE.set('fetching', true);
-        case actionTypes.TOP_BAR_USER_FETCHING_SUCCESS:
-            return state.merge({
-                avatar: action.payload.image.url,
-                displayName: action.payload.displayName,
-                url: action.payload.url,
-                fetching: false,
-                fetched: true
-            });
+        case ActionType.TOP_BAR_USER_FETCHING:
+            return ImmutableTopBarUserState.initialState.startFetching();
+        case ActionType.TOP_BAR_USER_FETCHING_SUCCESS:
+            return new ImmutableTopBarUserState(state).fetchingSuccess(action);
         default:
             return state;
     }

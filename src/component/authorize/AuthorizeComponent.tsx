@@ -1,20 +1,28 @@
+// @vendors
 import * as React from 'react';
 import { connect } from 'react-redux';
-
 import Snackbar from 'material-ui/Snackbar';
 
+// @stores
 import { RootState } from '@src/store';
+
+// @components
 import { LoginModalComponent } from '@src/component/loginModal/LoginModalComponent';
+
+// @actions
 import { useSession } from './AuthorizeAction';
 
+// @states
+import { AuthorizeState } from './AuthorizeState';
+
 interface AuthorizeComponentProperty {
-    immAuthorize: any;
+    authorizeState: AuthorizeState;
     useSession: () => void;
     children: React.ReactNode;
 }
 
 interface AuthorizeStateToProp {
-    immAuthorize: any;
+    authorizeState: AuthorizeState;
 }
 
 interface AuthorizeActionToProp {
@@ -27,28 +35,31 @@ class Authorize extends React.Component<AuthorizeComponentProperty> {
     }
 
     render() {
-        const { immAuthorize } = this.props;
+        const { authorizeState } = this.props;
 
-        if (immAuthorize.get('isAuth')) {
+        if (authorizeState.isAuth) {
             return this.props.children;
         } else {
             return (
                 <section>
                     <Snackbar
-                        open={!!immAuthorize.get('error')}
-                        message={immAuthorize.get('error')}
+                        open={!!authorizeState.error}
+                        message={authorizeState.error}
                         autoHideDuration={5000}
                     />
-                    <LoginModalComponent/>
+                    <LoginModalComponent />
                 </section>
             );
         }
     }
 }
 
-export const AuthorizeComponent = connect<AuthorizeStateToProp, AuthorizeActionToProp>(
+export const AuthorizeComponent = connect<
+    AuthorizeStateToProp,
+    AuthorizeActionToProp
+>(
     (state: RootState) => ({
-        immAuthorize: state.authorize
+        authorizeState: state.authorize
     }),
     {
         useSession

@@ -5,7 +5,8 @@ export interface Permission {
     role: string;
 }
 
-export const getOwner = (permissions: Permission[]) => permissions.find(x => x.role === 'owner');
+export const getOwner = (permissions: Permission[]) =>
+    permissions.find(x => x.role === 'owner');
 
 export function fileIdFromUrl(url: string): string {
     const fileId = url.match(/[-\w]{25,}/);

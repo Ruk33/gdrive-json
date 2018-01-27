@@ -1,3 +1,4 @@
+// @vendors
 import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
@@ -18,7 +19,10 @@ interface OpenNewDocumentState {
     fileId: string;
 }
 
-export class OpenNewDocumentComponent extends React.Component<OpenNewDocumentProperty, OpenNewDocumentState> {
+export class OpenNewDocumentComponent extends React.Component<
+    OpenNewDocumentProperty,
+    OpenNewDocumentState
+> {
     constructor(props: OpenNewDocumentProperty) {
         super(props);
 
@@ -38,7 +42,11 @@ export class OpenNewDocumentComponent extends React.Component<OpenNewDocumentPro
 
     render() {
         return (
-            <Dialog modal={true} open={this.props.isOpen} style={{ textAlign: 'center' }}>
+            <Dialog
+                modal={true}
+                open={this.props.isOpen}
+                style={{ textAlign: 'center' }}
+            >
                 <Card>
                     <CardTitle
                         title="Open a new document"

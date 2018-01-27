@@ -1,8 +1,12 @@
+// @vendors
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardMedia } from 'material-ui/Card';
 
+// @states
 import { RootState } from '@src/store';
+
+// @components
 import { LoadingSpinnerComponent } from '@src/component/loadingSpinner/LoadingSpinnerComponent';
 import { JsonEditorHeaderComponent } from '@src/component/jsonEditorHeader/JsonEditorHeaderComponent';
 import { JsonEditorComponent } from '@src/component/jsonEditor/JsonEditorComponent';
@@ -11,6 +15,7 @@ import { openModal } from '@src/component/historyModal/HistoryModalAction';
 import { OpenNewDocumentComponent } from '@src/component/openNewDocument/OpenNewDocumentComponent';
 import { DocumentInputComponent } from '@src/component/documentInput/DocumentInputComponent';
 
+// @actions
 import {
     formatDocument,
     formatDocumentOnLoad,
@@ -24,9 +29,12 @@ import {
     closeNewDocumentPopup
 } from './JsonEditorSectionAction';
 
+// @states
+import { JsonEditorSectionState } from './JsonEditorSectionState';
+
 interface JsonEditorSectionComponentProperty {
     documentId: string;
-    immJsonEditorSection: any;
+    jsonEditorSectionState: JsonEditorSectionState;
     onFetchDocument: (document: string) => void;
     onOpenHistoryModal: () => void;
     onFormatDocument: (editor: any) => void;
@@ -38,7 +46,7 @@ interface JsonEditorSectionComponentProperty {
 }
 
 interface JsonEditorSectionStateToProp {
-    immJsonEditorSection: any;
+    jsonEditorSectionState: JsonEditorSectionState;
 }
 
 interface JsonEditorSectionActionToProp {
@@ -52,7 +60,9 @@ interface JsonEditorSectionActionToProp {
     onCloseNewDocumentPopup: () => void;
 }
 
-class JsonEditorSection extends React.Component<JsonEditorSectionComponentProperty> {
+class JsonEditorSection extends React.Component<
+    JsonEditorSectionComponentProperty
+> {
     editor: any;
 
     constructor(props: JsonEditorSectionComponentProperty) {
@@ -60,7 +70,9 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
 
         this.setEditor = this.setEditor.bind(this);
         this.handleFormatDocument = this.handleFormatDocument.bind(this);
-        this.handleInitialFormatDocument = this.handleInitialFormatDocument.bind(this);
+        this.handleInitialFormatDocument = this.handleInitialFormatDocument.bind(
+            this
+        );
         this.handleUpdateLayer = this.handleUpdateLayer.bind(this);
         this.handleOpenSearchDialog = this.handleOpenSearchDialog.bind(this);
     }
@@ -90,15 +102,15 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
     }
 
     buildEditorHeader() {
-        const { immJsonEditorSection } = this.props;
+        const { jsonEditorSectionState } = this.props;
 
         return (
             <JsonEditorHeaderComponent
-                fileName={immJsonEditorSection.get('fileName')}
-                fileAuthorName={immJsonEditorSection.get('fileAuthorName')}
-                fileAuthorEmail={immJsonEditorSection.get('fileAuthorEmail')}
-                fileAuthorAvatar={immJsonEditorSection.get('fileAuthorAvatar')}
-                fileIsFetched={immJsonEditorSection.get('fetched')}
+                fileName={jsonEditorSectionState.fileName}
+                fileAuthorName={jsonEditorSectionState.fileAuthorName}
+                fileAuthorEmail={jsonEditorSectionState.fileAuthorEmail}
+                fileAuthorAvatar={jsonEditorSectionState.fileAuthorAvatar}
+                fileIsFetched={jsonEditorSectionState.fetched}
                 onLoadNewDocumentClick={this.props.onOpenNewDocumentPopup}
                 onOpenHistoryModal={this.props.onOpenHistoryModal}
                 onFormatDocument={this.handleFormatDocument}
@@ -111,7 +123,7 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
         return (
             <CardMedia>
                 <JsonEditorComponent
-                    fileContent={this.props.immJsonEditorSection.get('fileContent')}
+                    fileContent={this.props.jsonEditorSectionState.fileContent}
                     onEditorDidMount={this.setEditor}
                     onFormatDocument={this.handleFormatDocument}
                     onInitialFormatDocument={this.handleInitialFormatDocument}
@@ -122,22 +134,31 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
     }
 
     render() {
-        const { immJsonEditorSection } = this.props;
+        const { jsonEditorSectionState } = this.props;
 
-        const isFetchingDocument = immJsonEditorSection.get('fetching');
-        const isDocumentFetched = immJsonEditorSection.get('fetched');
+        const isFetchingDocument = jsonEditorSectionState.fetching;
+        const isDocumentFetched = jsonEditorSectionState.fetched;
 
         if (isFetchingDocument) {
-            return <div style={{ marginTop: '20px' }}><LoadingSpinnerComponent/></div>;
+            return (
+                <div style={{ marginTop: '20px' }}>
+                    <LoadingSpinnerComponent />
+                </div>
+            );
         } else if (isDocumentFetched) {
             return (
                 <Card>
-                    <HistoryModalComponent/>
+                    <HistoryModalComponent />
                     <OpenNewDocumentComponent
                         onContinue={this.props.onFetchDocument}
                         onClose={this.props.onCloseNewDocumentPopup}
-                        errorMessage={this.props.immJsonEditorSection.get('errorMessage')}
-                        isOpen={this.props.immJsonEditorSection.get('popUpNewDocumentOpen')}
+                        errorMessage={
+                            this.props.jsonEditorSectionState.errorMessage
+                        }
+                        isOpen={
+                            this.props.jsonEditorSectionState
+                                .popUpNewDocumentOpen
+                        }
                     />
                     {this.buildEditorHeader()}
                     {this.buildEditor()}
@@ -148,16 +169,21 @@ class JsonEditorSection extends React.Component<JsonEditorSectionComponentProper
                 <DocumentInputComponent
                     onContinue={this.props.onFetchDocument}
                     onOpenHistoryModal={this.props.onOpenHistoryModal}
-                    errorMessage={this.props.immJsonEditorSection.get('errorMessage')}
+                    errorMessage={
+                        this.props.jsonEditorSectionState.errorMessage
+                    }
                 />
             );
         }
     }
 }
 
-export const JsonEditorSectionComponent = connect<JsonEditorSectionStateToProp, JsonEditorSectionActionToProp>(
+export const JsonEditorSectionComponent = connect<
+    JsonEditorSectionStateToProp,
+    JsonEditorSectionActionToProp
+>(
     (state: RootState) => ({
-        immJsonEditorSection: state.jsonEditorSection
+        jsonEditorSectionState: state.jsonEditorSection
     }),
     {
         onFetchDocument: fetchDocument,

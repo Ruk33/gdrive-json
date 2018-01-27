@@ -1,3 +1,4 @@
+// @vendors
 import * as React from 'react';
 import MonacoEditor from 'react-monaco-editor';
 
@@ -13,7 +14,10 @@ interface JsonEditorComponentState {
     editorHeight: number;
 }
 
-export class JsonEditorComponent extends React.Component<JsonEditorComponentProperty, JsonEditorComponentState> {
+export class JsonEditorComponent extends React.Component<
+    JsonEditorComponentProperty,
+    JsonEditorComponentState
+> {
     constructor(props: JsonEditorComponentProperty) {
         super(props);
 
@@ -46,20 +50,26 @@ export class JsonEditorComponent extends React.Component<JsonEditorComponentProp
 
     render() {
         return (
-            <div style={{ height: this.state.editorHeight + 'px', width: '100%', position: 'fixed' }}>
-            <MonacoEditor
-                language="json"
-                theme="vs-dark"
-                value={this.props.fileContent}
-                editorDidMount={this.editorDidMount}
-                options={{
-                    contextmenu: false,
-                    folding: true,
-                    dragAndDrop: false,
-                    minimap: false,
-                    showFoldingControls: 'always'
+            <div
+                style={{
+                    height: this.state.editorHeight + 'px',
+                    width: '100%',
+                    position: 'fixed'
                 }}
-            />
+            >
+                <MonacoEditor
+                    language="json"
+                    theme="vs-dark"
+                    value={this.props.fileContent}
+                    editorDidMount={this.editorDidMount}
+                    options={{
+                        contextmenu: false,
+                        folding: true,
+                        dragAndDrop: false,
+                        minimap: false,
+                        showFoldingControls: 'always'
+                    }}
+                />
             </div>
         );
     }

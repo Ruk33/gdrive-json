@@ -1,5 +1,5 @@
+// @vendors
 import * as React from 'react';
-
 import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -17,7 +17,7 @@ export class LoadingSpinnerComponent extends React.Component {
         return (
             <div style={{ textAlign: 'center' }}>
                 <Paper style={style} zDepth={3} circle={true}>
-                    <CircularProgress size={20} thickness={4}/>
+                    <CircularProgress size={20} thickness={4} />
                 </Paper>
             </div>
         );

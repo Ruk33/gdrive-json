@@ -1,6 +1,6 @@
+// @vendors
 import * as React from 'react';
 import { connect } from 'react-redux';
-
 import Subheader from 'material-ui/Subheader';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
@@ -12,20 +12,27 @@ import { List, ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Divider from 'material-ui/Divider';
 
+// @stores
 import { RootState } from '@src/store';
 
+// @components
 import { fetchDocument } from '@src/component/jsonEditorSection/JsonEditorSectionAction';
+
+// @actions
 import { closeModal, filter } from './HistoryModalAction';
 
+// @states
+import { HistoryModalState, HistoryDocument } from './HistoryModalState';
+
 interface HistoryModalProperty {
-    immHistoryModal: any;
+    historyModalState: HistoryModalState;
     onCloseModal: () => void;
     fetchDocument: (document: string) => void;
     onChangeFilter: (searchTerm: string) => void;
 }
 
 interface HistoryModalStateToProp {
-    immHistoryModal: any;
+    historyModalState: HistoryModalState;
 }
 
 interface HistoryModalActionToProp {
@@ -47,29 +54,31 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
         this.props.onChangeFilter(filterText);
     }
 
-    handleDocClick(immFile) {
+    handleDocClick(file: HistoryDocument) {
         this.props.onCloseModal();
-        this.props.fetchDocument(immFile.get('fileUrl'));
+        this.props.fetchDocument(file.fileUrl);
     }
 
-    buildRow(immFile) {
-        const fileAuthorAvatar = <Avatar src={immFile.get('fileAuthorAvatar')}/>;
+    buildRow(file: HistoryDocument) {
+        const fileAuthorAvatar = <Avatar src={file.fileAuthorAvatar} />;
 
         return (
-            <div key={immFile.get('fileId')}>
-                <Divider/>
+            <div key={file.fileId}>
+                <Divider />
                 <ListItem
-                    primaryText={immFile.get('fileName')}
+                    primaryText={file.fileName}
                     leftIcon={fileAuthorAvatar}
-                    secondaryText={immFile.get('fileAuthor')}
-                    onClick={() => this.handleDocClick(immFile)}
+                    secondaryText={file.fileAuthor}
+                    onClick={() => this.handleDocClick(file)}
                 />
             </div>
         );
     }
 
     buildRows() {
-        const { immHistoryModal } = this.props;
+        const { historyModalState } = this.props;
+        const historyHasNoDocuments = historyModalState.docHistory.isEmpty();
+        const filterHasNoDocuments = historyModalState.filterDocs.isEmpty();
 
         const style = {
             border: '1px solid rgb(217, 217, 217)',
@@ -81,10 +90,10 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
 
         let rows;
 
-        if (immHistoryModal.get('docHistory').isEmpty()) {
+        if (historyHasNoDocuments) {
             rows = (
                 <div>
-                    <Divider/>
+                    <Divider />
                     <ListItem
                         primaryText="No documents in history"
                         secondaryText="You don't have any documents in your history. Try loading some and come back!"
@@ -93,10 +102,10 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
                     />
                 </div>
             );
-        } else if (immHistoryModal.get('filterDocs').isEmpty()) {
+        } else if (filterHasNoDocuments) {
             rows = (
                 <div>
-                    <Divider/>
+                    <Divider />
                     <ListItem
                         primaryText="Not found"
                         secondaryText="No documents were found"
@@ -106,26 +115,29 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
                 </div>
             );
         } else {
-            rows = this.props.immHistoryModal.get('filterDocs').map(this.buildRow);
+            rows = historyModalState.filterDocs.map(this.buildRow);
         }
 
         return (
             <List style={style}>
                 <Subheader>Documents</Subheader>
-                <Divider/>
+                <Divider />
                 {rows}
             </List>
         );
     }
 
     buildFilterInput() {
-        if (!this.props.immHistoryModal.get('docHistory').isEmpty()) {
+        const { historyModalState } = this.props;
+        const historyHasDocuments = !historyModalState.docHistory.isEmpty();
+
+        if (historyHasDocuments) {
             return (
                 <TextField
                     hintText="Search file for name or author"
                     floatingLabelText="Search file"
                     fullWidth={true}
-                    value={this.props.immHistoryModal.get('filter')}
+                    value={historyModalState.filterTerm}
                     onChange={this.handleFilterChange}
                 />
             );
@@ -138,7 +150,7 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
         return (
             <Dialog
                 modal={true}
-                open={this.props.immHistoryModal.get('modalIsOpen')}
+                open={this.props.historyModalState.modalIsOpen}
                 style={{ textAlign: 'center' }}
             >
                 <Card>
@@ -160,14 +172,16 @@ export class HistoryModal extends React.Component<HistoryModalProperty> {
                     </CardText>
                 </Card>
             </Dialog>
-
         );
     }
 }
 
-export const HistoryModalComponent = connect<HistoryModalStateToProp, HistoryModalActionToProp>(
+export const HistoryModalComponent = connect<
+    HistoryModalStateToProp,
+    HistoryModalActionToProp
+>(
     (state: RootState) => ({
-        immHistoryModal: state.historyModal
+        historyModalState: state.historyModal
     }),
     {
         onCloseModal: closeModal,
