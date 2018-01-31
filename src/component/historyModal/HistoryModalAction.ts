@@ -1,6 +1,5 @@
 // @states
 import { HistoryDocument } from './HistoryModalState';
-//import { List } from "immutable";
 
 export enum ActionType {
     HISTORY_MODAL_OPEN = 'HISTORY_MODAL_OPEN',
