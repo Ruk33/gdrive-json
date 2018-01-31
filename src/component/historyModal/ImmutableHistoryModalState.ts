@@ -10,7 +10,11 @@ import {
 
 export class ImmutableHistoryModalState extends Record(initialState)
     implements HistoryModalState {
-    static readonly initialState = new ImmutableHistoryModalState(initialState);
+    static readonly initialState: HistoryModalState = new ImmutableHistoryModalState(
+        initialState
+    );
+
+    static readonly LOCAL_STORAGE_HISTORY_KEY: string = 'jsonViewer.history';
 
     readonly modalIsOpen: boolean;
     readonly filterTerm: string;
@@ -45,8 +49,36 @@ export class ImmutableHistoryModalState extends Record(initialState)
         return this.merge({ modalIsOpen: false }) as this;
     }
 
-    loadFromHistory(docs: HistoryDocument[]): HistoryModalState {
-        return this.merge({ docHistory: docs }) as this;
+    loadHistoryFromSession(): HistoryModalState {
+        let documentsFromSession: string | null;
+        let documents: List<HistoryDocument>;
+
+        try {
+            documentsFromSession =
+                localStorage.getItem(
+                    ImmutableHistoryModalState.LOCAL_STORAGE_HISTORY_KEY
+                ) || '[]';
+            documents = List(JSON.parse(documentsFromSession));
+        } catch (e) {
+            documents = List([]);
+        }
+
+        return this.merge({
+            docHistory: documents,
+            filterDocs: documents
+        }) as this;
+    }
+
+    resetHistory(): HistoryModalState {
+        const documents: List<HistoryDocument> = List([]);
+
+        localStorage.removeItem(
+            ImmutableHistoryModalState.LOCAL_STORAGE_HISTORY_KEY
+        );
+        return this.merge({
+            docHistory: documents,
+            filterDocs: documents
+        }) as this;
     }
 
     addDocumentOnTopOfHistory(newDocument: HistoryDocument): HistoryModalState {
@@ -58,8 +90,14 @@ export class ImmutableHistoryModalState extends Record(initialState)
             HistoryDocument
         > = documentsInHistoryWithoutNewDocument.unshift(newDocument);
 
+        localStorage.setItem(
+            ImmutableHistoryModalState.LOCAL_STORAGE_HISTORY_KEY,
+            JSON.stringify(documentsInHistoryWithNewDocumentOnTop.toJS())
+        );
+
         return this.merge({
-            docHistory: documentsInHistoryWithNewDocumentOnTop
+            docHistory: documentsInHistoryWithNewDocumentOnTop,
+            filterDocs: documentsInHistoryWithNewDocumentOnTop
         }) as this;
     }
 

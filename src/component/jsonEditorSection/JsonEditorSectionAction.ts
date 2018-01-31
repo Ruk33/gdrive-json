@@ -4,7 +4,8 @@ import {
     getDocumentInfo,
     getDocumentPermissions
 } from '@src/util/googleDriveApi';
-import { fileIdFromUrl } from '@src/util/googleDriveFileHelper';
+import { fileIdFromUrl, getOwner } from '@src/util/googleDriveFileHelper';
+import { addToTopOfHistory } from '@src/component/historyModal/HistoryModalAction';
 
 export enum ActionType {
     JSON_EDITOR_SECTION_FETCHING = 'JSON_EDITOR_SECTION_FETCHING',
@@ -87,6 +88,14 @@ const fetchSuccess = (response): FetchingSuccessAction => ({
     }
 });
 
+const updateUriAfterFetchingDocument = (fileUrl: string) => {
+    history.pushState(null, '', `?document=${fileUrl}`);
+};
+
+const clearUriAfterReset = () => {
+    history.pushState(null, '', '/');
+};
+
 export const fetchDocument = fileUrl => dispatch => {
     if (!fileUrl) {
         return;
@@ -105,8 +114,19 @@ export const fetchDocument = fileUrl => dispatch => {
             const fileContent = result[0].body;
             const fileInfo = result[1].result;
             const filePermissions = result[2].result.items;
+            const owner = getOwner(filePermissions);
 
-            history.pushState(null, '', `?document=${fileUrl}`);
+            updateUriAfterFetchingDocument(fileUrl);
+
+            dispatch(
+                addToTopOfHistory({
+                    fileUrl,
+                    fileName: fileInfo.title,
+                    fileAuthor: owner ? owner.name : '?',
+                    fileAuthorAvatar: owner ? owner.photoLink : '',
+                    fileId
+                })
+            );
 
             dispatch(
                 fetchSuccess({
@@ -122,7 +142,7 @@ export const fetchDocument = fileUrl => dispatch => {
 };
 
 export const reset = (): ResetAction => {
-    history.pushState(null, '', '/'); // Clean document query param
+    clearUriAfterReset();
     return { type: ActionType.JSON_EDITOR_SECTION_RESET };
 };
 

@@ -1,6 +1,12 @@
 // @utils
 import * as google from '@src/util/googleApi';
 
+// @actions
+import {
+    resetHistory,
+    loadHistoryFromSession
+} from '@src/component/historyModal/HistoryModalAction';
+
 export enum ActionType {
     AUTHORIZE_STATUS_CHANGE = 'AUTHORIZE_STATUS_CHANGE',
     AUTHORIZE_ERROR = 'AUTHORIZE_ERROR'
@@ -49,11 +55,15 @@ export const login = () => dispatch => {
 };
 
 export const useSession = () => dispatch => {
-    return google
-        .loginWithSession(authStatusChange)
-        .then(() => dispatch(authStatusChange(true, true)));
+    return google.loginWithSession(authStatusChange).then(() => {
+        dispatch(loadHistoryFromSession());
+        dispatch(authStatusChange(true, true));
+    });
 };
 
 export const logout = () => dispatch => {
-    return google.logout().then(() => dispatch(authStatusChange(false)));
+    return google.logout().then(() => {
+        dispatch(resetHistory());
+        dispatch(authStatusChange(false));
+    });
 };
