@@ -28,7 +28,7 @@
         "react-dom": "^16.2.0",
         "react-monaco-editor": "^0.12.0",
         "react-redux": "^5.0.6",
-        "redux": "^3.7.2",
+        "redux": "^4.0.0",
         "redux-thunk": "^2.2.0",
         "source-map-loader": "^0.2.1",
         "style-loader": "0.18.2",
@@ -39,7 +39,7 @@
         "tslint-loader": "^3.5.3",
         "tslint-react": "^3.2.0",
         "typeface-roboto": "0.0.45",
-        "typescript": "~2.5.3",
+        "typescript": "^3.9",
         "url-loader": "0.5.9",
         "webpack": "3.5.1",
         "webpack-dev-server": "2.7.1",
@@ -54,7 +54,7 @@
     },
     "devDependencies": {
         "@types/jest": "^21.1.8",
-        "@types/lodash": "^4.14.88",
+        "@types/lodash": "^4.14.112",
         "@types/node": "^8.0.56",
         "@types/react": "^16.0.27",
         "@types/react-dom": "^16.0.3",
@@ -69,8 +69,12 @@
     },
     "jest": {
         "mapCoverage": true,
-        "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
-        "setupFiles": ["<rootDir>/config/polyfills.js"],
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx,ts,tsx}"
+        ],
+        "setupFiles": [
+            "<rootDir>/config/polyfills.js"
+        ],
         "testMatch": [
             "<rootDir>/src/**/__tests__/**/*.ts?(x)",
             "<rootDir>/src/**/?(*.)(spec|test).ts?(x)"
@@ -80,8 +84,7 @@
         "transform": {
             "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
             "^.+\\.tsx?$": "<rootDir>/config/jest/typescriptTransform.js",
-            "^(?!.*\\.(js|jsx|css|json)$)":
-                "<rootDir>/config/jest/fileTransform.js"
+            "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
         },
         "transformIgnorePatterns": [
             "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"
@@ -103,13 +106,14 @@
         ],
         "globals": {
             "ts-jest": {
-                "tsConfigFile":
-                    "C:\\Users\\Ruke\\apps\\gdrive-json\\tsconfig.test.json"
+                "tsConfigFile": "C:\\Users\\Ruke\\apps\\gdrive-json\\tsconfig.test.json"
             }
         }
     },
     "babel": {
-        "presets": ["react-app"]
+        "presets": [
+            "react-app"
+        ]
     },
     "eslintConfig": {
         "extends": "react-app"

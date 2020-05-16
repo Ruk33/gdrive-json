@@ -38,7 +38,12 @@ function rootReducer(state, action): RootState {
     return appReducer(state, action);
 }
 
-export const store = createStore<RootState>(
+/*export const store = createStore<RootState>(
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk))
+);*/
+
+export const store = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(thunk))
 );
